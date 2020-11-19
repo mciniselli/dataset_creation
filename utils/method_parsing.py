@@ -1,4 +1,3 @@
-
 '''
 METHOD
 | id                   |
@@ -20,76 +19,77 @@ MASKED METHOD
 from utils.input_output import read_file, write_file
 import os
 
+
 class Method:
 
     def __init__(self, code, repo, commit, url):
-        self.code=code
-        self.repo=repo
-        self.commit=commit
-        self.url=url
+        self.code = code
+        self.repo = repo
+        self.commit = commit
+        self.url = url
         self.tokens = self.get_list_of_tokens()
-        self.start_conditions=None
-        self.end_conditions=None
-        self.conditon_types=None
+        self.start_conditions = None
+        self.end_conditions = None
+        self.conditon_types = None
 
     def read_indeces(self):
-        index_method=0
-        index_masked=0
-        path_method="result/id_method.txt"
-        path_masked="result/id_masked.txt"
-        if os.path.exists(path_method)==False or os.path.exists(path_masked)==False:
+        index_method = 0
+        index_masked = 0
+        path_method = "result/id_method.txt"
+        path_masked = "result/id_masked.txt"
+        if os.path.exists(path_method) == False or os.path.exists(path_masked) == False:
             self.write_indeces("-1", "-1")
             return index_method, index_masked
 
-        res=read_file(path_method)
-        index_method=int(res[0])
+        res = read_file(path_method)
+        index_method = int(res[0])
 
-        res=read_file(path_masked)
-        index_masked=int(res[0])
+        res = read_file(path_masked)
+        index_masked = int(res[0])
 
         return index_method, index_masked
 
-
     def write_indeces(self, index_method, index_masked):
-        path_method="result/id_method.txt"
-        path_masked="result/id_masked.txt"
+        path_method = "result/id_method.txt"
+        path_masked = "result/id_masked.txt"
 
         write_file(path_method, [str(index_method)])
         write_file(path_masked, [str(index_masked)])
 
     def export_method_and_masked_method(self):
-        index_method, index_masked=self.read_indeces()
-        method_filename="result/methods.txt"
-        masked_filename="result/masked_methods.txt"
 
-        separator="|_|"
+        if len(self.start_conditions) == 0:
+            # print(self.code)
+            return
 
-        index_method+=1
-        method_fields=list()
+        index_method, index_masked = self.read_indeces()
+        method_filename = "result/methods.txt"
+        masked_filename = "result/masked_methods.txt"
+
+        separator = "|_|"
+
+        index_method += 1
+        method_fields = list()
         method_fields.append(str(index_method))
         method_fields.append(str(self.tokens))
         method_fields.append(self.repo)
         method_fields.append(self.commit)
         method_fields.append(self.url)
 
-        record=separator.join(method_fields)
+        record = separator.join(method_fields)
         write_file(method_filename, [record], "a+")
 
         for st, en, ct in zip(self.start_conditions, self.end_conditions, self.conditon_types):
-            index_masked+=1
-            masked_fields=list()
+            index_masked += 1
+            masked_fields = list()
             masked_fields.append(str(index_masked))
             masked_fields.append(str(index_method))
 
-            masked_code=("".join(self.tokens[:st])).strip()+ " <x>" + ("".join(self.tokens[en:])).strip()
-            mask=("".join(self.tokens[st:en])).strip()+"<z>"
+            masked_code = ("".join(self.tokens[:st])).strip() + " <x>" + ("".join(self.tokens[en:])).strip()
+            mask = ("".join(self.tokens[st:en])).strip() + "<z>"
 
             masked_fields.append(masked_code)
             masked_fields.append(mask)
-
-            masked_fields.append(str(st))
-            masked_fields.append(str(en))
-
             masked_fields.append(str(st))
             masked_fields.append(str(en))
             masked_fields.append(str(ct))
@@ -103,9 +103,9 @@ class Method:
         conditions = ["for", "if", "else if", "while"]
         conditions_value = ["FOR", "IF", "IF", "WHILE"]
 
-        start_conditions=list()
-        end_conditions=list()
-        condition_types=list()
+        start_conditions = list()
+        end_conditions = list()
+        condition_types = list()
 
         for i, t in enumerate(self.tokens):
             if t in conditions:
@@ -113,22 +113,21 @@ class Method:
                 start_conditions.append(start_condition)
                 end_conditions.append(end_condition)
 
-                found=False
+                found = False
                 for i, c in enumerate(conditions):
-                    if t==c:
+                    if t == c:
                         condition_types.append(conditions_value[i])
-                        found=True
-                if found==False:
+                        found = True
+                if found == False:
                     condition_types.append("NONE")
 
-        self.start_conditions=start_conditions
-        self.end_conditions=end_conditions
-        self.conditon_types=condition_types
-
+        self.start_conditions = start_conditions
+        self.end_conditions = end_conditions
+        self.conditon_types = condition_types
 
     def get_condition(self, index):
         start_index = index + 1
-        tokens=self.tokens
+        tokens = self.tokens
         while tokens[start_index] != "(":
             start_index += 1
         start_index += 1
@@ -144,7 +143,7 @@ class Method:
                 end_index = ind
                 break
 
-        print("".join(tokens[start_index:end_index]))
+        # print("".join(tokens[start_index:end_index]))
         return start_index, end_index
 
     def get_list_of_tokens(self):

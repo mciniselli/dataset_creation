@@ -14,8 +14,7 @@ class Repository:
 
         try:
 
-            # oo=run_command('git clone https://test:test@github.com/{}.git {}'.format(repo_full_name,  self.repo_dir ), self.repo_dir)
-            oo="ok"
+            oo=run_command('git clone https://test:test@github.com/{}.git {}'.format(repo_full_name,  self.repo_dir ), self.repo_dir)
             if "failed" in oo:
                self.ok_repo=False
 
