@@ -11,7 +11,8 @@ from utils.method_parsing import Method
 from utils.utilities import getListOfFiles
 
 import sys
-
+import os
+from utils.progress import read_progress_file, get_progress_value, update_progress_bar
 
 def main():
     json_file = "json_data/results.json"
@@ -24,7 +25,19 @@ def main():
     # for k in items[0]:
     #     print(k, items[0][k])
 
+    read_progress_file()
+
+    max_value=9999999
+    if os.path.exists("max_value.txt"):
+        max_value=int(read_file("max_value.txt")[0])
+
+    file_name="results.json"
+
     for i, item in enumerate(items):
+
+        index_start = get_progress_value(file_name)
+        if i <= index_start or i>max_value:
+            continue
 
         print("Processed {} repositories of out {}".format(i, len(items)))
         write_file("current_file.txt", ["Processed {} repositories of out {}".format(i, len(items))], "a+" )
@@ -41,6 +54,9 @@ def main():
             files = getListOfFiles(r.repo_dir)
             java_files = [f for f in files if f.endswith(".java")]
             # print(java_files)
+
+
+
             for f in java_files:
 
                 textprocessing = TextProcessing(f)
@@ -61,6 +77,8 @@ def main():
             print(e)
         finally:
             r.cleanup()
+            update_progress_bar(file_name, i)
+
             # print("cleaned")
 
 

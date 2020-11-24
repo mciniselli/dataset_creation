@@ -79,6 +79,8 @@ class Method:
         record = separator.join(method_fields)
         write_file(method_filename, [record], "a+")
 
+        records=list()
+
         for st, en, ct in zip(self.start_conditions, self.end_conditions, self.conditon_types):
             index_masked += 1
             masked_fields = list()
@@ -95,7 +97,8 @@ class Method:
             masked_fields.append(str(ct))
 
             record = separator.join(masked_fields)
-            write_file(masked_filename, [record], "a+")
+            records.append(record)
+        write_file(masked_filename, records, "a+")
 
         self.write_indeces(index_method, index_masked)
 
