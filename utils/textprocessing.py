@@ -12,6 +12,7 @@ class TextProcessing:
         self.raw_text = read_file(java_path)
         self.text = None
 
+
     def srcml_process(self):
 
         self.xml_path = self.java_path.replace(".java", ".xml")

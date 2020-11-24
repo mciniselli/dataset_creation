@@ -1,7 +1,7 @@
 import os
 from shutil import rmtree
 
-from utils.utilities import run_command
+from utils.utilities import run_command_clone
 
 class Repository:
     def __init__(self, repo_full_name):
@@ -14,7 +14,7 @@ class Repository:
 
         try:
 
-            oo=run_command('git clone https://test:test@github.com/{}.git {}'.format(repo_full_name,  self.repo_dir ), self.repo_dir)
+            oo=run_command_clone('git clone https://test:test@github.com/{}.git {}'.format(repo_full_name,  self.repo_dir ), self.repo_dir)
             if "failed" in oo:
                self.ok_repo=False
 

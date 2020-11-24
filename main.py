@@ -59,19 +59,24 @@ def main():
 
             for f in java_files:
 
-                textprocessing = TextProcessing(f)
+                try:
 
-                textprocessing.srcml_process()
+                    textprocessing = TextProcessing(f)
 
-                textprocessing.remove_comments()
-                textprocessing.remove_tags()
+                    textprocessing.srcml_process()
 
-                methods = textprocessing.get_list_of_methods()
+                    textprocessing.remove_comments()
+                    textprocessing.remove_tags()
 
-                for m in methods:
-                    m_obj = Method(m, repo_name, repo_commit, repo_url)
-                    m_obj.get_all_conditions()
-                    m_obj.export_method_and_masked_method()
+                    methods = textprocessing.get_list_of_methods()
+
+                    for m in methods:
+                        m_obj = Method(m, repo_name, repo_commit, repo_url)
+                        m_obj.get_all_conditions()
+                        m_obj.export_method_and_masked_method()
+
+                except Exception as e:
+                    print("ERROR")
 
         except Exception as e:
             print(e)
@@ -80,6 +85,11 @@ def main():
             update_progress_bar(file_name, i)
 
             # print("cleaned")
+
+
+
+
+
 
 
 if __name__ == "__main__":
